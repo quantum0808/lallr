@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+      #container {
+        height: 90%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #simulation {
+        height: 500px;
+        width: 500px;
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+      }
+
+      #graph {
+        height: 500px;
+        width: 500px;
+      }
+
+      button {
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="simulation">
+        <canvas id="canvas"></canvas>
+        <div>
+          <button id="increaseMass">Increase Mass</button>
+          <button id="decreaseMass">Decrease Mass</button>
+        </div>
+        <div>
+          <button id="increaseK">Increase K</button>
+          <button id="decreaseK">Decrease K</button>
+        </div>
+      </div>
+      <div id="graph"></div>
+    </div>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      let m = 1; // mass
+      let k = 10; // spring constant
+      let x = 0; // position
+      let v = 0; // velocity
+      let t = 0; // time
+      let dt = 0.01; // time step
+      let points = []; // position vs time data
+
+      // simulate spring oscillation
+      setInterval(function() {
+        simulate();
+        draw();
+      }, 10);
+
+      // handle increase mass button click
+      document.getElementById("increaseMass").addEventListener("click", function() {
+        m += 0.5;
+      });
+
+      // handle decrease mass button click
+      document.getElementById("decreaseMass").addEventListener("click", function() {
+        m -= 0.5;
+      });
+
+      // handle increase k button click
+      document.getElementById("increaseK").addEventListener("click", function() {
+        k += 5;
+      });
+
+      // handle decrease k button click
+      document.getElementById("decreaseK").addEventListener("click", function() {
+        k -= 5;
+      });
+
+      function simulate() {
+        // calculate acceleration using Hooke's law
+        let a = -k / m * x;
+        // update velocity using Euler's method
+        v = v + a * dt;
+        // update position using Euler's method
+        x = x + v * dt;
+        // update time
+        t = t + dt;
+        // store position vs time data
+        points.push({ x: t, y: x });
+        updateGraph();
+      }
